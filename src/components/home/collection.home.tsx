@@ -14,6 +14,9 @@ import { router } from "expo-router";
 import ContentLoader, { Rect } from "react-content-loader/native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { useCurrentApp } from "@/context/app.context";
+import { currencyFormatter } from "@/utils/api";
+import React from "react";
 
 const { height: sHeight, width: sWidth } = Dimensions.get("window");
 
@@ -39,6 +42,20 @@ const styles = StyleSheet.create({
 
 const CollectionHome = (props: IProps) => {
   const { name, description, refAPI } = props;
+  const { cart, setCart, restaurant, setRestaurant } = useCurrentApp();
+
+  // Mock restaurant for testing
+  const mockRestaurant = {
+    _id: "mock_restaurant_1",
+    name: "Test Restaurant",
+    menu: [],
+  };
+
+  useEffect(() => {
+    if (!restaurant) {
+      setRestaurant(mockRestaurant);
+    }
+  }, []);
 
   // Dữ liệu cứng cho các sản phẩm
   const mockRestaurants = [
@@ -71,23 +88,62 @@ const CollectionHome = (props: IProps) => {
   const [restaurants, setRestaurants] = useState(mockRestaurants);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [selectedItems, setSelectedItems] = useState<{ [key: string]: number }>(
-    {}
-  );
+  const handleQuantityChange = (item: any, action: "MINUS" | "PLUS") => {
+    if (!restaurant?._id) return;
 
-  const handleQuantityChange = (itemId: string, action: "MINUS" | "PLUS") => {
-    setSelectedItems((prevState) => {
-      const currentQuantity = prevState[itemId] || 0;
-      const newQuantity =
-        action === "PLUS"
-          ? currentQuantity + 1
-          : Math.max(currentQuantity - 1, 0);
+    const total = action === "MINUS" ? -1 : 1;
+    const priceChange = total * item.price;
 
-      return {
-        ...prevState,
-        [itemId]: newQuantity,
+    const newCart = { ...cart };
+    if (!newCart[restaurant._id]) {
+      newCart[restaurant._id] = {
+        sum: 0,
+        quantity: 0,
+        items: {},
       };
-    });
+    }
+
+    newCart[restaurant._id].sum =
+      (newCart[restaurant._id].sum || 0) + priceChange;
+    newCart[restaurant._id].quantity =
+      (newCart[restaurant._id].quantity || 0) + total;
+
+    if (!newCart[restaurant._id].items[item._id]) {
+      newCart[restaurant._id].items[item._id] = {
+        data: {
+          ...item,
+          basePrice: item.price,
+          title: item.name,
+        },
+        quantity: 0,
+      };
+    }
+
+    const currentQuantity =
+      (newCart[restaurant._id].items[item._id].quantity || 0) + total;
+
+    if (currentQuantity <= 0) {
+      delete newCart[restaurant._id].items[item._id];
+      if (Object.keys(newCart[restaurant._id].items).length === 0) {
+        delete newCart[restaurant._id];
+      }
+    } else {
+      newCart[restaurant._id].items[item._id] = {
+        data: {
+          ...item,
+          basePrice: item.price,
+          title: item.name,
+        },
+        quantity: currentQuantity,
+      };
+    }
+
+    setCart(newCart);
+  };
+
+  const getItemQuantity = (itemId: string) => {
+    if (!restaurant?._id) return 0;
+    return cart[restaurant._id]?.items[itemId]?.quantity || 0;
   };
 
   const backend =
@@ -146,6 +202,7 @@ const CollectionHome = (props: IProps) => {
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => {
+              const quantity = getItemQuantity(item._id);
               return (
                 <Pressable
                   onPress={() =>
@@ -171,7 +228,7 @@ const CollectionHome = (props: IProps) => {
                         {item.name}
                       </Text>
                       <Text style={{ color: "#5a5a5a", fontSize: 12 }}>
-                        {item.price.toLocaleString()} VND
+                        {currencyFormatter(item.price)}
                       </Text>
                     </View>
                     <View
@@ -179,37 +236,31 @@ const CollectionHome = (props: IProps) => {
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "center",
+                        paddingBottom: 5,
                       }}
                     >
-                      {selectedItems[item._id] > 0 ? (
-                        <Pressable
-                          onPress={() =>
-                            handleQuantityChange(item._id, "MINUS")
-                          }
-                          style={({ pressed }) => ({
-                            opacity: pressed ? 0.5 : 1,
-                          })}
-                        >
-                          <AntDesign
-                            name="minussquareo"
-                            size={24}
-                            color={APP_COLOR.ORANGE}
-                          />
-                        </Pressable>
-                      ) : (
+                      <Pressable
+                        onPress={() => handleQuantityChange(item, "MINUS")}
+                        style={({ pressed }) => ({
+                          opacity: quantity > 0 ? (pressed ? 0.5 : 1) : 0.3,
+                        })}
+                        disabled={quantity === 0}
+                      >
                         <AntDesign
                           name="minussquareo"
                           size={24}
-                          color={APP_COLOR.GREY}
+                          color={
+                            quantity > 0 ? APP_COLOR.ORANGE : APP_COLOR.GREY
+                          }
                         />
-                      )}
+                      </Pressable>
 
                       <Text style={{ minWidth: 25, textAlign: "center" }}>
-                        {selectedItems[item._id] || 0}
+                        {quantity}
                       </Text>
 
                       <Pressable
-                        onPress={() => handleQuantityChange(item._id, "PLUS")}
+                        onPress={() => handleQuantityChange(item, "PLUS")}
                         style={({ pressed }) => ({
                           opacity: pressed ? 0.5 : 1,
                         })}

@@ -7,10 +7,16 @@ import ItemQuantity from "@/components/example/restaurant/order/item.quantity";
 import { useCurrentApp } from "@/context/app.context";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { StyleSheet, Pressable, Text, View } from "react-native";
+import { StyleSheet, Pressable, Text, View, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { APP_COLOR } from "@/utils/constant";
-import { currencyFormatter } from "@/utils/api";
+import { currencyFormatter, getURLBaseBackend } from "@/utils/api";
+import Animated, {
+  FadeIn,
+  SlideInDown,
+  FadeOut,
+} from "react-native-reanimated";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 const data = [
   {
@@ -35,6 +41,9 @@ const data = [
 
 const HomeTab = () => {
   const [mounted, setMounted] = useState(false);
+  const [showCart, setShowCart] = useState(false);
+  const [showPriceUpdate, setShowPriceUpdate] = useState(false);
+  const [priceUpdateAmount, setPriceUpdateAmount] = useState(0);
   const { restaurant, cart } = useCurrentApp();
 
   useEffect(() => {
@@ -60,10 +69,22 @@ const HomeTab = () => {
     }
   };
 
+  const handleQuantityChange = (amount: number) => {
+    setPriceUpdateAmount(amount);
+    setShowPriceUpdate(true);
+    setTimeout(() => {
+      setShowPriceUpdate(false);
+    }, 2000);
+  };
+
   const totalPrice = restaurant?._id ? cart[restaurant._id]?.sum || 0 : 0;
   const totalQuantity = restaurant?._id
     ? cart[restaurant._id]?.quantity || 0
     : 0;
+
+  const cartItems = restaurant?._id
+    ? Object.values(cart[restaurant._id]?.items || {})
+    : [];
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -88,30 +109,96 @@ const HomeTab = () => {
             restaurant={restaurant}
             menuItem={restaurant.menu[0].menuItem[0]}
             isModal={false}
+            onQuantityChange={handleQuantityChange}
           />
         )}
-      {totalQuantity > 0 && (
-        <View style={styles.orderContainer}>
-          <View style={styles.orderInfo}>
-            <Text style={styles.orderText}>
-              Tổng cộng ({totalQuantity} món)
-            </Text>
-            <Text style={styles.orderPrice}>
-              {currencyFormatter(totalPrice)}
-            </Text>
-          </View>
-          <Pressable
-            style={({ pressed }) => [
-              styles.orderButton,
-              pressed && styles.orderButtonPressed,
-            ]}
-            onPress={() => router.push("/(user)/product/place.order")}
-          >
-            <Text style={styles.orderButtonText}>
-              Đặt đơn - {currencyFormatter(totalPrice)}
-            </Text>
-          </Pressable>
+
+      {/* Price Update Popup */}
+      {showPriceUpdate && (
+        <Animated.View
+          entering={FadeIn}
+          exiting={FadeOut}
+          style={styles.priceUpdateContainer}
+        >
+          <Text style={styles.priceUpdateText}>
+            {priceUpdateAmount > 0 ? "+" : ""}
+            {currencyFormatter(priceUpdateAmount)}
+          </Text>
+        </Animated.View>
+      )}
+
+      {/* Cart Button */}
+      <Pressable style={styles.cartButton} onPress={() => setShowCart(true)}>
+        <AntDesign name="shoppingcart" size={24} color="white" />
+        <View style={styles.cartBadge}>
+          <Text style={styles.cartBadgeText}>{totalQuantity}</Text>
         </View>
+        <View style={styles.cartButtonContent}>
+          <Text style={styles.cartButtonText}>Giỏ hàng</Text>
+          <Text style={styles.cartButtonPrice}>
+            {currencyFormatter(totalPrice)}
+          </Text>
+        </View>
+      </Pressable>
+
+      {/* Cart Modal */}
+      {showCart && (
+        <Animated.View entering={FadeIn} style={styles.modalOverlay}>
+          <Pressable
+            style={styles.modalBackground}
+            onPress={() => setShowCart(false)}
+          />
+          <Animated.View entering={SlideInDown} style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Giỏ hàng</Text>
+              <AntDesign
+                name="close"
+                size={24}
+                color="grey"
+                onPress={() => setShowCart(false)}
+              />
+            </View>
+            <ScrollView style={styles.cartScroll}>
+              {cartItems.map((item, index) => (
+                <View key={index} style={styles.cartItem}>
+                  <View style={styles.cartItemInfo}>
+                    <Text style={styles.cartItemTitle}>{item.data.title}</Text>
+                    <Text style={styles.cartItemQuantity}>
+                      Số lượng: {item.quantity}
+                    </Text>
+                  </View>
+                  <Text style={styles.cartItemPrice}>
+                    {currencyFormatter(item.data.basePrice * item.quantity)}
+                  </Text>
+                </View>
+              ))}
+            </ScrollView>
+            <View style={styles.modalFooter}>
+              <View style={styles.orderInfo}>
+                <Text style={styles.orderText}>
+                  Tổng cộng ({totalQuantity} món)
+                </Text>
+                <Text style={styles.orderPrice}>
+                  {currencyFormatter(totalPrice)}
+                </Text>
+              </View>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.orderButton,
+                  pressed && styles.orderButtonPressed,
+                ]}
+                onPress={() => {
+                  setShowCart(false);
+                  router.push("/(user)/product/place.order");
+                }}
+              >
+                <Text style={styles.orderButtonText}>
+                  Đặt đơn - {currencyFormatter(totalPrice)}
+                </Text>
+              </Pressable>
+            </View>
+          </Animated.View>
+        </Animated.View>
       )}
     </SafeAreaView>
   );
@@ -149,20 +236,133 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     width: "100%",
   },
-  orderContainer: {
+  cartButton: {
     position: "absolute",
-    bottom: 0,
+    bottom: 20,
+    left: 20,
+    right: 20,
+    backgroundColor: APP_COLOR.ORANGE,
+    borderRadius: 8,
+    padding: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  cartBadge: {
+    position: "absolute",
+    top: -8,
+    right: 20,
+    backgroundColor: "red",
+    borderRadius: 12,
+    minWidth: 24,
+    height: 24,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1,
+  },
+  cartBadgeText: {
+    color: "white",
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+  cartButtonContent: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginLeft: 15,
+  },
+  cartButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  cartButtonPrice: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  modalOverlay: {
+    position: "absolute",
+    top: 0,
     left: 0,
     right: 0,
+    bottom: 0,
+    justifyContent: "flex-end",
+    zIndex: 1000,
+  },
+  modalBackground: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
     backgroundColor: "white",
-    padding: 15,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    maxHeight: "80%",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  cartScroll: {
+    maxHeight: 400,
+  },
+  cartItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  cartItemInfo: {
+    flex: 1,
+  },
+  cartItemTitle: {
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  cartItemQuantity: {
+    fontSize: 12,
+    color: APP_COLOR.GREY,
+    marginTop: 4,
+  },
+  cartItemPrice: {
+    color: APP_COLOR.ORANGE,
+    fontWeight: "600",
+  },
+  modalFooter: {
+    marginTop: 20,
+    paddingTop: 20,
     borderTopWidth: 1,
     borderTopColor: "#eee",
   },
   orderInfo: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 10,
+    marginBottom: 15,
   },
   orderText: {
     color: APP_COLOR.GREY,
@@ -172,8 +372,8 @@ const styles = StyleSheet.create({
   },
   orderButton: {
     backgroundColor: APP_COLOR.ORANGE,
-    padding: 10,
-    borderRadius: 3,
+    padding: 15,
+    borderRadius: 8,
   },
   orderButtonPressed: {
     opacity: 0.5,
@@ -181,6 +381,24 @@ const styles = StyleSheet.create({
   orderButtonText: {
     color: "white",
     textAlign: "center",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  priceUpdateContainer: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: [{ translateX: -50 }, { translateY: -50 }],
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+    zIndex: 1001,
+  },
+  priceUpdateText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
 export default HomeTab;

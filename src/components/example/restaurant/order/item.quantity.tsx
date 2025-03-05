@@ -6,10 +6,11 @@ interface IProps {
   menuItem: IMenuItem;
   restaurant: IRestaurant | null;
   isModal: boolean;
+  onQuantityChange?: (amount: number) => void;
 }
 
 const ItemQuantity = (props: IProps) => {
-  const { menuItem, restaurant, isModal } = props;
+  const { menuItem, restaurant, isModal, onQuantityChange } = props;
   const { cart, setCart } = useCurrentApp();
 
   const handlePressItem = (item: IMenuItem, action: "MINUS" | "PLUS") => {
@@ -22,8 +23,9 @@ const ItemQuantity = (props: IProps) => {
     } else {
       if (restaurant?._id) {
         const total = action === "MINUS" ? -1 : 1;
+        const priceChange = total * item.basePrice;
+
         if (!cart[restaurant?._id]) {
-          //chưa tồn tại cửa hàng => khởi tạo cửa hàng
           cart[restaurant._id] = {
             sum: 0,
             quantity: 0,
@@ -31,12 +33,10 @@ const ItemQuantity = (props: IProps) => {
           };
         }
 
-        //xử lý sản phẩm
-        cart[restaurant._id].sum =
-          cart[restaurant._id].sum + total * item.basePrice;
+        // Update cart for the specific restaurant
+        cart[restaurant._id].sum = cart[restaurant._id].sum + priceChange;
         cart[restaurant._id].quantity = cart[restaurant._id].quantity + total;
 
-        //check sản phẩm đã từng thêm vào chưa
         if (!cart[restaurant._id].items[item._id]) {
           cart[restaurant._id].items[item._id] = {
             data: menuItem,
@@ -54,7 +54,14 @@ const ItemQuantity = (props: IProps) => {
         if (currentQuantity <= 0) {
           delete cart[restaurant._id].items[item._id];
         }
-        setCart((prevState: any) => ({ ...prevState, ...cart })); //merge state
+
+        // Update the cart and trigger re-render
+        setCart((prevState: any) => ({ ...prevState, ...cart }));
+
+        // Trigger the onQuantityChange callback
+        if (onQuantityChange) {
+          onQuantityChange(priceChange); // This will show the price update popup
+        }
       }
     }
   };
