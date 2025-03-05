@@ -69,7 +69,7 @@ const HeaderHome = () => {
             width: 70,
             position: "absolute",
             right: 10,
-            top: "50%",
+            top: 10,
             transform: [{ translateY: -25 }],
           }}
         />

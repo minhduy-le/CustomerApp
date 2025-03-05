@@ -113,7 +113,6 @@ const HomeTab = () => {
           />
         )}
 
-      {/* Price Update Popup */}
       {showPriceUpdate && (
         <Animated.View
           entering={FadeIn}
@@ -127,21 +126,21 @@ const HomeTab = () => {
         </Animated.View>
       )}
 
-      {/* Cart Button */}
-      <Pressable style={styles.cartButton} onPress={() => setShowCart(true)}>
-        <AntDesign name="shoppingcart" size={24} color="white" />
-        <View style={styles.cartBadge}>
-          <Text style={styles.cartBadgeText}>{totalQuantity}</Text>
-        </View>
-        <View style={styles.cartButtonContent}>
-          <Text style={styles.cartButtonText}>Giỏ hàng</Text>
-          <Text style={styles.cartButtonPrice}>
-            {currencyFormatter(totalPrice)}
-          </Text>
-        </View>
-      </Pressable>
+      {totalQuantity > 0 && (
+        <Pressable style={styles.cartButton} onPress={() => setShowCart(true)}>
+          <AntDesign name="shoppingcart" size={24} color="white" />
+          <View style={styles.cartBadge}>
+            <Text style={styles.cartBadgeText}>{totalQuantity}</Text>
+          </View>
+          <View style={styles.cartButtonContent}>
+            <Text style={styles.cartButtonText}>Giỏ hàng</Text>
+            <Text style={styles.cartButtonPrice}>
+              {currencyFormatter(totalPrice)}
+            </Text>
+          </View>
+        </Pressable>
+      )}
 
-      {/* Cart Modal */}
       {showCart && (
         <Animated.View entering={FadeIn} style={styles.modalOverlay}>
           <Pressable
