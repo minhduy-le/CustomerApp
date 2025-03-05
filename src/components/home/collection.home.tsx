@@ -17,6 +17,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { useCurrentApp } from "@/context/app.context";
 import { currencyFormatter } from "@/utils/api";
 import React from "react";
+import Popup from "./popup.home";
 
 const { height: sHeight, width: sWidth } = Dimensions.get("window");
 
@@ -57,37 +58,54 @@ const CollectionHome = (props: IProps) => {
     }
   }, []);
 
-  // Dữ liệu cứng cho các sản phẩm
   const mockRestaurants = [
     {
       _id: "1",
       name: "Pizza Margherita",
       price: 150000,
       image: "demo.jpg",
+      description:
+        "Một chiếc pizza truyền thống với sốt cà chua, phô mai mozzarella và lá húng quế tươi.",
     },
     {
       _id: "2",
       name: "Burger Classic",
       price: 80000,
       image: "demo.jpg",
+      description:
+        "Burger với thịt bò tươi ngon, phô mai cheddar, rau xà lách và sốt đặc biệt.",
     },
     {
       _id: "3",
       name: "Sushi Rolls",
       price: 120000,
       image: "demo.jpg",
+      description:
+        "Sushi cuộn tươi ngon với cá hồi, cơm, và rau cuốn bên ngoài.",
     },
     {
       _id: "4",
       name: "Pasta Carbonara",
       price: 130000,
       image: "demo.jpg",
+      description:
+        "Mì pasta với sốt carbonara mịn màng, được làm từ trứng, phô mai parmesan và thịt xông khói.",
     },
   ];
 
   const [restaurants, setRestaurants] = useState(mockRestaurants);
   const [loading, setLoading] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const handlePressItem = (item: any) => {
+    setSelectedItem(item);
+    setModalVisible(true);
+  };
 
+  const closeModal = () => {
+    setModalVisible(false);
+    setSelectedItem(null);
+  };
   const handleQuantityChange = (item: any, action: "MINUS" | "PLUS") => {
     if (!restaurant?._id) return;
 
@@ -204,14 +222,7 @@ const CollectionHome = (props: IProps) => {
             renderItem={({ item }) => {
               const quantity = getItemQuantity(item._id);
               return (
-                <Pressable
-                  onPress={() =>
-                    router.navigate({
-                      pathname: "/product/[id]",
-                      params: { id: item._id },
-                    })
-                  }
-                >
+                <Pressable onPress={() => handlePressItem(item)}>
                   <View
                     style={{ backgroundColor: "#efefef", borderRadius: 10 }}
                   >
@@ -276,6 +287,11 @@ const CollectionHome = (props: IProps) => {
                 </Pressable>
               );
             }}
+          />
+          <Popup
+            visible={modalVisible}
+            onClose={closeModal}
+            item={selectedItem}
           />
         </View>
       ) : (
