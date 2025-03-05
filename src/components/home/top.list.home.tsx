@@ -62,7 +62,6 @@ const data1 = [
 ];
 
 const TopListHome = () => {
-  // https://stackoverflow.com/questions/45939823/react-native-horizontal-flatlist-with-multiple-rows
   return (
     <View>
       <BannerHome />
@@ -75,7 +74,7 @@ const TopListHome = () => {
       >
         <FlatList
           contentContainerStyle={{ alignSelf: "flex-start" }}
-          numColumns={Math.ceil(data1.length / 2)}
+          numColumns={Math.ceil(data1.length / 1)}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           data={data1}
@@ -98,7 +97,6 @@ const TopListHome = () => {
                 <Text
                   style={{
                     textAlign: "center",
-                    // fontFamily: APP_FONT
                   }}
                 >
                   {item.name}

@@ -45,7 +45,6 @@ const RMain = () => {
   const { restaurant } = useCurrentApp();
 
   const scrollY = useSharedValue(0);
-
   const sectionListRef = useRef<SectionList>(null);
   const flatListRef = useRef<FlatList>(null);
   const [activeMenuIndex, setActiveMenuIndex] = useState<number | string>(0);

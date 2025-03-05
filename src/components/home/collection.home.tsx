@@ -8,10 +8,8 @@ import {
   Pressable,
   Dimensions,
 } from "react-native";
-import demo from "@/assets/demo.jpg";
 import { APP_COLOR } from "@/utils/constant";
 import { useEffect, useState } from "react";
-import { getTopRestaurant } from "@/utils/api";
 import { router } from "expo-router";
 import ContentLoader, { Rect } from "react-content-loader/native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -42,28 +40,40 @@ const styles = StyleSheet.create({
 const CollectionHome = (props: IProps) => {
   const { name, description, refAPI } = props;
 
-  // State to store the restaurant data
-  const [restaurants, setRestaurants] = useState<ITopRestaurant[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  // Dữ liệu cứng cho các sản phẩm
+  const mockRestaurants = [
+    {
+      _id: "1",
+      name: "Pizza Margherita",
+      price: 150000,
+      image: "demo.jpg",
+    },
+    {
+      _id: "2",
+      name: "Burger Classic",
+      price: 80000,
+      image: "demo.jpg",
+    },
+    {
+      _id: "3",
+      name: "Sushi Rolls",
+      price: 120000,
+      image: "demo.jpg",
+    },
+    {
+      _id: "4",
+      name: "Pasta Carbonara",
+      price: 130000,
+      image: "demo.jpg",
+    },
+  ];
 
-  // State to manage quantities of selected items
+  const [restaurants, setRestaurants] = useState(mockRestaurants);
+  const [loading, setLoading] = useState<boolean>(false);
+
   const [selectedItems, setSelectedItems] = useState<{ [key: string]: number }>(
     {}
   );
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const res = await getTopRestaurant(refAPI);
-      if (res.data) {
-        setRestaurants(res.data);
-      } else {
-        // Handle error
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, [refAPI]);
 
   const handleQuantityChange = (itemId: string, action: "MINUS" | "PLUS") => {
     setSelectedItems((prevState) => {
@@ -73,7 +83,6 @@ const CollectionHome = (props: IProps) => {
           ? currentQuantity + 1
           : Math.max(currentQuantity - 1, 0);
 
-      // Return the updated state
       return {
         ...prevState,
         [itemId]: newQuantity,
@@ -151,7 +160,7 @@ const CollectionHome = (props: IProps) => {
                   >
                     <Image
                       style={{ height: 130, width: 130, borderRadius: 10 }}
-                      source={{ uri: `${baseImage}/${item.image}` }}
+                      source={require("@/assets/demo.jpg")}
                     />
                     <View style={{ padding: 5 }}>
                       <Text
@@ -160,6 +169,9 @@ const CollectionHome = (props: IProps) => {
                         style={{ fontWeight: "600", maxWidth: 130 }}
                       >
                         {item.name}
+                      </Text>
+                      <Text style={{ color: "#5a5a5a", fontSize: 12 }}>
+                        {item.price.toLocaleString()} VND
                       </Text>
                     </View>
                     <View
