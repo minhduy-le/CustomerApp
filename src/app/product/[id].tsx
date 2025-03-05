@@ -31,7 +31,6 @@ const ProductPage = () => {
             speed={2}
             width={700}
             height={sHeight}
-            // viewBox="0 0 700 150"
             backgroundColor="#f3f3f3"
             foregroundColor="#ecebeb"
             style={{ width: "100%" }}

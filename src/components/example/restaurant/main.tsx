@@ -9,6 +9,7 @@ import {
   SectionList,
   ViewToken,
   ScrollView,
+  SectionListRenderItemInfo,
 } from "react-native";
 import Animated, {
   useAnimatedScrollHandler,
@@ -19,7 +20,6 @@ import Animated, {
   interpolateColor,
 } from "react-native-reanimated";
 import Info from "./info";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import { APP_COLOR } from "@/utils/constant";
 import StickyHeader from "./sticky.header";
 import { useRef, useState } from "react";
@@ -28,6 +28,9 @@ import {
   getURLBaseBackend,
   processDataRestaurantMenu,
 } from "@/utils/api";
+import StickyFooter from "./order/sticky.footer";
+import ItemQuantity from "./order/item.quantity";
+import { useCurrentApp } from "@/context/app.context";
 
 const AnimatedSectionList = Animated.createAnimatedComponent(SectionList);
 
@@ -37,18 +40,16 @@ const HEADER_HEIGHT = 120;
 const IMAGE_HEIGHT = 220;
 const INFO_HEIGHT = 250;
 const SLIDE_MENU_HEIGHT = 50;
-interface IProps {
-  restaurants: IRestaurant | null;
-}
-const RMain = (props: IProps) => {
-  const { restaurants } = props;
+
+const RMain = () => {
+  const { restaurant } = useCurrentApp();
+
   const scrollY = useSharedValue(0);
 
   const sectionListRef = useRef<SectionList>(null);
   const flatListRef = useRef<FlatList>(null);
   const [activeMenuIndex, setActiveMenuIndex] = useState<number | string>(0);
   const blockUpdateRef = useRef<boolean>(false);
-
   const onScroll = useAnimatedScrollHandler((event) => {
     scrollY.value = event.contentOffset.y;
   });
@@ -67,13 +68,12 @@ const RMain = (props: IProps) => {
       pointerEvents,
     };
   });
-
   const animatedMenuStyle = useAnimatedStyle(() => {
     const range = IMAGE_HEIGHT + INFO_HEIGHT - HEADER_HEIGHT;
     const translateY = interpolate(
       scrollY.value,
       [0, range], // Define scroll range
-      [0, -range - 2], //2px menu border
+      [0, -range - 2],
       Extrapolation.CLAMP
     );
 
@@ -157,7 +157,7 @@ const RMain = (props: IProps) => {
   ).current;
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <StickyHeader
         headerHeight={HEADER_HEIGHT}
         imageHeight={IMAGE_HEIGHT}
@@ -172,7 +172,7 @@ const RMain = (props: IProps) => {
         <Image
           source={{
             uri: `${getURLBaseBackend()}/images/restaurant/${
-              restaurants?.image
+              restaurant?.image
             }`,
           }}
           style={styles.headerImage}
@@ -181,14 +181,14 @@ const RMain = (props: IProps) => {
 
       {/* Info */}
       <Animated.View style={[animatedInfoStyle]}>
-        <Info infoHeight={INFO_HEIGHT} restaurants={restaurants} />
+        <Info infoHeight={INFO_HEIGHT} restaurant={restaurant} />
       </Animated.View>
 
       {/* Sticky Menu */}
       <Animated.FlatList
         ref={flatListRef}
         horizontal
-        data={processDataRestaurantMenu(restaurants)}
+        data={processDataRestaurantMenu(restaurant)}
         renderItem={({ item, index }) => (
           <TouchableOpacity
             key={index}
@@ -238,54 +238,17 @@ const RMain = (props: IProps) => {
         stickySectionHeadersEnabled={false}
         contentContainerStyle={{
           paddingTop: IMAGE_HEIGHT + INFO_HEIGHT + SLIDE_MENU_HEIGHT - 2,
-          paddingBottom: 30,
+          paddingBottom: 50,
         }}
-        sections={processDataRestaurantMenu(restaurants)}
+        sections={processDataRestaurantMenu(restaurant)}
         renderItem={({ item, index }: { item: any; index: any }) => {
           const menuItem = item as IMenuItem;
           return (
-            <View
-              style={{
-                backgroundColor: "white",
-                gap: 10,
-                flexDirection: "row",
-                padding: 10,
-              }}
-            >
-              <View>
-                <Image
-                  style={{ height: 100, width: 100 }}
-                  source={{
-                    uri: `${getURLBaseBackend()}/images/menu-item/${
-                      menuItem?.image
-                    }`,
-                  }}
-                />
-              </View>
-              <View style={{ flex: 1, gap: 10 }}>
-                <View>
-                  <Text>{menuItem.title}</Text>
-                </View>
-                <View>
-                  <Text>{menuItem.description}</Text>
-                </View>
-                <View
-                  style={{
-                    justifyContent: "space-between",
-                    flexDirection: "row",
-                  }}
-                >
-                  <Text style={{ color: APP_COLOR.ORANGE }}>
-                    {currencyFormatter(menuItem.basePrice)}
-                  </Text>
-                  <AntDesign
-                    name="plussquare"
-                    size={24}
-                    color={APP_COLOR.ORANGE}
-                  />
-                </View>
-              </View>
-            </View>
+            <ItemQuantity
+              restaurant={restaurant}
+              menuItem={menuItem}
+              isModal={false}
+            />
           );
         }}
         renderSectionHeader={({ section }: { section: any }) => (
@@ -319,6 +282,8 @@ const RMain = (props: IProps) => {
         onViewableItemsChanged={onViewableItemsChanged}
         onMomentumScrollEnd={() => (blockUpdateRef.current = false)}
       />
+
+      <StickyFooter restaurant={restaurant} />
     </View>
   );
 };

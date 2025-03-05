@@ -7,6 +7,7 @@ import {
   View,
 } from "react-native";
 import BannerHome from "./banner.home";
+import { APP_FONT } from "@/utils/constant";
 
 const styles = StyleSheet.create({});
 const data1 = [
@@ -75,6 +76,8 @@ const TopListHome = () => {
         <FlatList
           contentContainerStyle={{ alignSelf: "flex-start" }}
           numColumns={Math.ceil(data1.length / 2)}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
           data={data1}
           renderItem={({ item, index }) => {
             return (
@@ -92,7 +95,14 @@ const TopListHome = () => {
                     width: 35,
                   }}
                 />
-                <Text style={{ textAlign: "center" }}>{item.name}</Text>
+                <Text
+                  style={{
+                    textAlign: "center",
+                    // fontFamily: APP_FONT
+                  }}
+                >
+                  {item.name}
+                </Text>
               </View>
             );
           }}

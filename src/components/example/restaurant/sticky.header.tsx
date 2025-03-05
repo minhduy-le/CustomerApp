@@ -4,13 +4,15 @@ import { Dimensions, Pressable, StyleSheet, TextInput, View } from "react-native
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useCurrentApp } from "@/context/app.context";
+import { likeRestaurantAPI } from "@/utils/api";
+import Toast from "react-native-root-toast"
+import { useEffect, useState } from "react";
 
 const AnimatedMaterialIcons = Animated.createAnimatedComponent(MaterialIcons)
 const { height: sHeight, width: sWidth } = Dimensions.get('window');
 
-const styles = StyleSheet.create({
 
-})
 interface IProps {
     headerHeight: number;
     imageHeight: number;
@@ -29,6 +31,40 @@ const StickyHeader = (props: IProps) => {
         animatedArrowColorStyle, animatedStickyHeaderStyle,
         animatedHeartIconStyle
     } = props;
+
+    const [like, setLike] = useState<boolean>(false);
+    const { restaurant, appState } = useCurrentApp();
+
+    useEffect(() => {
+        if (restaurant) {
+            setLike(restaurant.isLike);
+        }
+    }, [restaurant])
+
+    const handleLikeRestaurant = async () => {
+        //chỉ thực hiện khi user đã đăng nhập
+        if (appState?.user._id && restaurant) {
+            //lấy phủ định
+            const quantity = like === true ? -1 : 1;
+            const res = await likeRestaurantAPI(
+                restaurant?._id, quantity
+            )
+            if (res.data) {
+                //success 
+                setLike(!like);
+            } else {
+                const m = Array.isArray(res.message)
+                    ? res.message[0] : res.message;
+
+                Toast.show(m, {
+                    duration: Toast.durations.LONG,
+                    textColor: "white",
+                    backgroundColor: APP_COLOR.ORANGE,
+                    opacity: 1
+                });
+            }
+        }
+    }
 
     // nút Back và like/dislike gộp vào component này, vì nó có zIndex cao nhất => có thể pressabled
     return (
@@ -91,8 +127,14 @@ const StickyHeader = (props: IProps) => {
                 right: 10,
                 zIndex: 9,
             }, animatedHeartIconStyle]}>
-                {/* <MaterialIcons name="favorite" size={20} color="black" /> */}
-                <MaterialIcons onPress={() => alert("like")} name="favorite-outline" size={20} color={APP_COLOR.GREY} />
+                <MaterialIcons
+                    onPress={handleLikeRestaurant}
+                    name={like === true ?
+                        "favorite" : "favorite-outline"
+                    }
+                    size={20}
+                    color={like === true ? APP_COLOR.ORANGE : APP_COLOR.GREY}
+                />
             </Animated.View>
         </>
     )

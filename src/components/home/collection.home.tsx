@@ -7,20 +7,24 @@ import {
   Platform,
   Pressable,
   Dimensions,
-  SafeAreaView,
 } from "react-native";
 import demo from "@/assets/demo.jpg";
 import { APP_COLOR } from "@/utils/constant";
 import { useEffect, useState } from "react";
-import { getTopRestaurants } from "@/utils/api";
+import { getTopRestaurant } from "@/utils/api";
 import { router } from "expo-router";
-import ContentLoader, { Rect, Circle, Path } from "react-content-loader/native";
+import ContentLoader, { Rect } from "react-content-loader/native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import AntDesign from "@expo/vector-icons/AntDesign";
+
+const { height: sHeight, width: sWidth } = Dimensions.get("window");
+
 interface IProps {
   name: string;
   description: string;
   refAPI: string;
 }
-const { height: sHeight, width: sWidth } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
   container: {
     padding: 10,
@@ -34,41 +38,67 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
 });
+
 const CollectionHome = (props: IProps) => {
   const { name, description, refAPI } = props;
-  const data = [
-    { key: 1, image: demo, name: "Cửa hàng 1" },
-    { key: 2, image: demo, name: "Cửa hàng 2" },
-    { key: 3, image: demo, name: "Cửa hàng 3" },
-    { key: 4, image: demo, name: "Cửa hàng 4" },
-    { key: 5, image: demo, name: "Cửa hàng 5" },
-  ];
-  const [restaurants, setRestaurants] = useState<ITopRestaurants[] | []>([]);
-  const [loading, setLoading] = useState(true);
+
+  // State to store the restaurant data
+  const [restaurants, setRestaurants] = useState<ITopRestaurant[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  // State to manage quantities of selected items
+  const [selectedItems, setSelectedItems] = useState<{ [key: string]: number }>(
+    {}
+  );
+
   useEffect(() => {
-    const fecthData = async () => {
+    const fetchData = async () => {
       setLoading(true);
-      const res = await getTopRestaurants(refAPI);
+      const res = await getTopRestaurant(refAPI);
       if (res.data) {
         setRestaurants(res.data);
       } else {
+        // Handle error
       }
       setLoading(false);
     };
-    fecthData();
+    fetchData();
   }, [refAPI]);
+
+  const handleQuantityChange = (itemId: string, action: "MINUS" | "PLUS") => {
+    setSelectedItems((prevState) => {
+      const currentQuantity = prevState[itemId] || 0;
+      const newQuantity =
+        action === "PLUS"
+          ? currentQuantity + 1
+          : Math.max(currentQuantity - 1, 0);
+
+      // Return the updated state
+      return {
+        ...prevState,
+        [itemId]: newQuantity,
+      };
+    });
+  };
+
   const backend =
     Platform.OS === "android"
       ? process.env.EXPO_PUBLIC_ANDROID_API_URL
       : process.env.EXPO_PUBLIC_IOS_API_URL;
+
   const baseImage = `${backend}/images/restaurant`;
+
   return (
     <>
       <View style={{ height: 10, backgroundColor: "#e9e9e9" }}></View>
       {loading === false ? (
         <View style={styles.container}>
           <View
-            style={{ justifyContent: "space-between", flexDirection: "row" }}
+            style={{
+              justifyContent: "space-between",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
           >
             <Text
               style={{
@@ -79,11 +109,27 @@ const CollectionHome = (props: IProps) => {
             >
               {name}
             </Text>
-            <Text style={{ color: "5a5a5a" }}>Xem tất cả</Text>
+            <Pressable
+              onPress={() => router.navigate("/(auth)/restaurants")}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ color: "#5a5a5a" }}>Xem tất cả</Text>
+              <MaterialIcons
+                style={{ marginTop: 3 }}
+                name="navigate-next"
+                size={20}
+                color="grey"
+              />
+            </Pressable>
           </View>
+
           <View style={{ marginVertical: 5 }}>
-            <Text style={{ color: "5a5a5a" }}>{description}</Text>
+            <Text style={{ color: "#5a5a5a" }}>{description}</Text>
           </View>
+
           <FlatList
             data={restaurants}
             horizontal
@@ -100,9 +146,11 @@ const CollectionHome = (props: IProps) => {
                     })
                   }
                 >
-                  <View style={{ backgroundColor: "#efefef" }}>
+                  <View
+                    style={{ backgroundColor: "#efefef", borderRadius: 10 }}
+                  >
                     <Image
-                      style={{ height: 130, width: 130 }}
+                      style={{ height: 130, width: 130, borderRadius: 10 }}
                       source={{ uri: `${baseImage}/${item.image}` }}
                     />
                     <View style={{ padding: 5 }}>
@@ -113,11 +161,53 @@ const CollectionHome = (props: IProps) => {
                       >
                         {item.name}
                       </Text>
-                      <View style={styles.sale}>
-                        <Text style={{ color: APP_COLOR.ORANGE }}>
-                          Flash Sale
-                        </Text>
-                      </View>
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {selectedItems[item._id] > 0 ? (
+                        <Pressable
+                          onPress={() =>
+                            handleQuantityChange(item._id, "MINUS")
+                          }
+                          style={({ pressed }) => ({
+                            opacity: pressed ? 0.5 : 1,
+                          })}
+                        >
+                          <AntDesign
+                            name="minussquareo"
+                            size={24}
+                            color={APP_COLOR.ORANGE}
+                          />
+                        </Pressable>
+                      ) : (
+                        <AntDesign
+                          name="minussquareo"
+                          size={24}
+                          color={APP_COLOR.GREY}
+                        />
+                      )}
+
+                      <Text style={{ minWidth: 25, textAlign: "center" }}>
+                        {selectedItems[item._id] || 0}
+                      </Text>
+
+                      <Pressable
+                        onPress={() => handleQuantityChange(item._id, "PLUS")}
+                        style={({ pressed }) => ({
+                          opacity: pressed ? 0.5 : 1,
+                        })}
+                      >
+                        <AntDesign
+                          name="plussquare"
+                          size={24}
+                          color={APP_COLOR.ORANGE}
+                        />
+                      </Pressable>
                     </View>
                   </View>
                 </Pressable>
@@ -126,20 +216,18 @@ const CollectionHome = (props: IProps) => {
           />
         </View>
       ) : (
-        <SafeAreaView>
-          <ContentLoader
-            speed={2}
-            width={sWidth}
-            height={230}
-            backgroundColor="#f3f3f3"
-            foregroundColor="#ecebeb"
-            style={{ width: "100%" }}
-          >
-            <Rect x="10" y="10" rx="5" ry="5" width={150} height="200" />
-            <Rect x="170" y="10" rx="5" ry="5" width={150} height="200" />
-            <Rect x="330" y="10" rx="5" ry="5" width={150} height="200" />
-          </ContentLoader>
-        </SafeAreaView>
+        <ContentLoader
+          speed={2}
+          width={sWidth}
+          height={230}
+          backgroundColor="#f3f3f3"
+          foregroundColor="#ecebeb"
+          style={{ width: "100%" }}
+        >
+          <Rect x="10" y="10" rx="5" ry="5" width={150} height="200" />
+          <Rect x="170" y="10" rx="5" ry="5" width={150} height="200" />
+          <Rect x="330" y="10" rx="5" ry="5" width={150} height="200" />
+        </ContentLoader>
       )}
     </>
   );

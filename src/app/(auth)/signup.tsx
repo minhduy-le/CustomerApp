@@ -53,7 +53,7 @@ const SignUpPage = () => {
                 initialValues={{ email: '', password: '', name: '' }}
                 onSubmit={values => handleSignUp(values.email, values.password, values.name)}
             >
-                {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+                {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                     <View style={styles.container}>
                         <View>
                             <Text style={{
@@ -68,6 +68,7 @@ const SignUpPage = () => {
                             onBlur={handleBlur('name')}
                             value={values.name}
                             error={errors.name}
+                            touched={touched.name}
                         />
 
                         <ShareInput
@@ -77,6 +78,7 @@ const SignUpPage = () => {
                             onBlur={handleBlur('email')}
                             value={values.email}
                             error={errors.email}
+                            touched={touched.email}
                         />
 
                         <ShareInput
@@ -86,6 +88,7 @@ const SignUpPage = () => {
                             onBlur={handleBlur('password')}
                             value={values.password}
                             error={errors.password}
+                            touched={touched.password}
                         />
 
                         <View style={{ marginVertical: 10 }}></View>
@@ -120,7 +123,10 @@ const SignUpPage = () => {
                                 Đã có tài khoản?
                             </Text>
                             <Link href={"/(auth)/login"}>
-                                <Text style={{ color: "black", textDecorationLine: 'underline' }}>
+                                <Text style={{
+                                    color: APP_COLOR.ORANGE,
+                                    textDecorationLine: 'underline'
+                                }}>
                                     Đăng nhập.
                                 </Text>
                             </Link>

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import * as Location from "expo-location";
 import { APP_COLOR } from "@/utils/constant";
-
+import logo from "@/assets/logo.png";
 const styles = StyleSheet.create({
   container: {
     paddingTop: 5,
     gap: 3,
+    height: 50,
   },
   location: {
     flexDirection: "row",
@@ -45,10 +46,33 @@ const HeaderHome = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={{ paddingLeft: 5 }}>Giao đến:</Text>
       <View style={styles.location}>
-        <Entypo name="location-pin" size={20} color={APP_COLOR.ORANGE} />
-        <Text>{location ? location : "Đang lấy vị trí..."}</Text>
+        <Text
+          style={{ paddingLeft: 5, position: "absolute", top: 10, left: 10 }}
+        >
+          Giao đến:
+        </Text>
+        <Entypo
+          name="location-pin"
+          size={20}
+          color={APP_COLOR.ORANGE}
+          style={{ marginLeft: 10, position: "absolute", top: 10, left: 70 }}
+        />
+        <Text style={{ position: "absolute", top: 10, left: 100 }}>
+          {location ? location : "Đang lấy vị trí..."}
+        </Text>
+
+        <Image
+          source={logo}
+          style={{
+            height: 70,
+            width: 70,
+            position: "absolute",
+            right: 10,
+            top: "50%",
+            transform: [{ translateY: -25 }],
+          }}
+        />
       </View>
     </View>
   );

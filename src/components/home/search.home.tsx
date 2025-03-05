@@ -1,10 +1,11 @@
 import { APP_COLOR } from "@/utils/constant";
-import { StyleSheet, Text, View } from "react-native"
+import { Pressable, StyleSheet, Text, View } from "react-native"
 import EvilIcons from '@expo/vector-icons/EvilIcons';
+import { router } from "expo-router";
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: APP_COLOR.GREY,
+        backgroundColor: "#eee",
         gap: 5,
         flexDirection: "row",
         margin: 5,
@@ -15,7 +16,9 @@ const styles = StyleSheet.create({
 })
 const SearchHome = () => {
     return (
-        <View style={styles.container}>
+        <Pressable
+            onPress={() => router.navigate("/(auth)/search")}
+            style={styles.container}>
             <EvilIcons
                 name="search"
                 size={20}
@@ -24,7 +27,7 @@ const SearchHome = () => {
             <Text style={{
                 color: "#707070"
             }}>Deal Hot Hôm Nay Từ 0đ...</Text>
-        </View>
+        </Pressable>
     )
 }
 
