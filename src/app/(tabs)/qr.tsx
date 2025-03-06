@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Button, Dimensions } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Button,
+  Dimensions,
+  Image,
+  Animated,
+} from "react-native";
 import { BarCodeScanner, BarCodeScannerResult } from "expo-barcode-scanner";
 import tamtac from "@/assets/logo.png";
 import { APP_COLOR } from "@/utils/constant";
@@ -9,6 +17,7 @@ const { width } = Dimensions.get("window");
 export default function QRScanner() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
+  const [scanAnimation] = useState(new Animated.Value(0));
 
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
@@ -17,7 +26,25 @@ export default function QRScanner() {
     };
 
     getBarCodeScannerPermissions();
-  }, []);
+    const startScanAnimation = () => {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(scanAnimation, {
+            toValue: width,
+            duration: 4000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(scanAnimation, {
+            toValue: 0,
+            duration: 0,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    };
+
+    startScanAnimation();
+  }, [scanAnimation]);
 
   const handleBarCodeScanned = (scanningResult: BarCodeScannerResult) => {
     setScanned(true);
@@ -46,7 +73,10 @@ export default function QRScanner() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Quét mã QR</Text>
+      <View style={styles.headerContent}>
+        <Image source={tamtac} style={styles.image} />
+        <Text style={styles.title}>Quét mã QR</Text>
+      </View>
       <View style={styles.scannerContainer}>
         <BarCodeScanner
           onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
@@ -66,6 +96,18 @@ export default function QRScanner() {
           </View>
           <View style={styles.unfocusedContainer}></View>
         </View>
+        <Animated.View
+          style={[
+            styles.scanningLine,
+            {
+              transform: [
+                {
+                  translateY: scanAnimation,
+                },
+              ],
+            },
+          ]}
+        />
       </View>
       {scanned && (
         <Button
@@ -84,6 +126,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+  },
+  headerContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 100,
+    position: "absolute",
+    top: 40,
+  },
+  image: {
+    width: 200,
+    height: 200,
   },
   title: {
     fontSize: 24,
@@ -106,6 +159,7 @@ const styles = StyleSheet.create({
   unfocusedContainer: {
     flex: 1,
     backgroundColor: "#EBD187",
+    zIndex: 10,
   },
   middleContainer: {
     flexDirection: "row",
@@ -117,6 +171,7 @@ const styles = StyleSheet.create({
   },
   cornerTopLeft: {
     position: "absolute",
+    zIndex: 999,
     top: -10,
     left: -10,
     width: 40,
@@ -157,5 +212,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderRightWidth: 2,
     borderColor: APP_COLOR.ORANGE,
+  },
+  scanningLine: {
+    position: "absolute",
+    right: 70,
+    width: 207,
+    height: 2,
+    backgroundColor: "rgba(219, 122, 12, 0.54)",
+    top: 70,
+    zIndex: 1,
   },
 });

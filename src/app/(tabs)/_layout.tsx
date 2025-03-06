@@ -4,6 +4,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import Octicons from "@expo/vector-icons/Octicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { APP_COLOR } from "@/utils/constant";
+import { View } from "react-native";
 
 const TabLayout = () => {
   const getIcons = (routeName: string, focused: boolean, size: number) => {
@@ -28,9 +29,33 @@ const TabLayout = () => {
 
     if (routeName === "qr") {
       return focused ? (
-        <AntDesign name="qrcode" size={size} color={APP_COLOR.ORANGE} />
+        <View
+          style={{
+            width: size + 25,
+            height: size + 25,
+            borderRadius: (size + 25) / 2,
+            backgroundColor: "#fff",
+            justifyContent: "center",
+            alignItems: "center",
+            elevation: 5,
+          }}
+        >
+          <AntDesign name="qrcode" size={size} color={APP_COLOR.ORANGE} />
+        </View>
       ) : (
-        <AntDesign name="qrcode" size={size} color={APP_COLOR.GREY} />
+        <View
+          style={{
+            width: size + 25,
+            height: size + 25,
+            borderRadius: (size + 25) / 2,
+            backgroundColor: "#fff",
+            justifyContent: "center",
+            alignItems: "center",
+            elevation: 5,
+          }}
+        >
+          <AntDesign name="qrcode" size={size} color={APP_COLOR.GREY} />
+        </View>
       );
     }
 
@@ -70,6 +95,23 @@ const TabLayout = () => {
         headerShown: false,
         tabBarLabelStyle: { paddingBottom: 3 },
         tabBarActiveTintColor: APP_COLOR.ORANGE,
+        tabBarStyle: {
+          borderTopWidth: 0,
+          height: 50,
+          paddingBottom: 5,
+          backgroundColor: "#fff",
+        },
+
+        tabBarLabel:
+          route.name === "qr"
+            ? "Quét mã QR"
+            : route.name === "order"
+            ? "Đơn hàng"
+            : route.name === "index"
+            ? "Trang chủ"
+            : route.name === "notification"
+            ? "Thông báo"
+            : "Tôi",
       })}
     >
       <Tabs.Screen
@@ -88,6 +130,14 @@ const TabLayout = () => {
         name="qr"
         options={{
           title: "Quét mã QR",
+          tabBarItemStyle: {
+            transform: [{ translateY: -20 }],
+            elevation: 10,
+          },
+          tabBarLabelStyle: {
+            position: "absolute",
+            bottom: -17,
+          },
         }}
       />
       <Tabs.Screen
@@ -96,7 +146,6 @@ const TabLayout = () => {
           title: "Thông báo",
         }}
       />
-
       <Tabs.Screen
         name="account"
         options={{
