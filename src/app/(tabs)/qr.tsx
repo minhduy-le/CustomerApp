@@ -11,6 +11,7 @@ import {
 import { BarCodeScanner, BarCodeScannerResult } from "expo-barcode-scanner";
 import tamtac from "@/assets/logo.png";
 import { APP_COLOR } from "@/utils/constant";
+import { FONTS, typography } from "@/theme/typography";
 
 const { width } = Dimensions.get("window");
 
@@ -54,7 +55,9 @@ export default function QRScanner() {
   if (hasPermission === null) {
     return (
       <View style={styles.container}>
-        <Text>Đang yêu cầu quyền truy cập camera...</Text>
+        <Text style={typography.bodyMedium}>
+          Đang yêu cầu quyền truy cập camera...
+        </Text>
       </View>
     );
   }
@@ -62,7 +65,9 @@ export default function QRScanner() {
   if (hasPermission === false) {
     return (
       <View style={styles.container}>
-        <Text>Không có quyền truy cập camera</Text>
+        <Text style={typography.bodyMedium}>
+          Không có quyền truy cập camera
+        </Text>
         <Button
           title="Yêu cầu quyền"
           onPress={() => BarCodeScanner.requestPermissionsAsync()}
@@ -75,7 +80,7 @@ export default function QRScanner() {
     <View style={styles.container}>
       <View style={styles.headerContent}>
         <Image source={tamtac} style={styles.image} />
-        <Text style={styles.title}>Quét mã QR</Text>
+        <Text style={[typography.h2, styles.title]}>Quét mã QR</Text>
       </View>
       <View style={styles.scannerContainer}>
         <BarCodeScanner
@@ -104,7 +109,7 @@ export default function QRScanner() {
         />
       </View>
       <View style={styles.bottomText}>
-        <Text>QR: {scanResult}</Text>
+        <Text style={typography.bodyMedium}>QR: {scanResult}</Text>
       </View>
       {scanned && (
         <View style={styles.reScanButtonContainer}>
@@ -138,8 +143,6 @@ const styles = StyleSheet.create({
     height: 200,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
     marginBottom: 20,
     color: APP_COLOR.ORANGE,
   },

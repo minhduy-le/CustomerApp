@@ -1,37 +1,41 @@
-import { Text, View } from "react-native";
+import { Text, View, StyleSheet, TextStyle } from "react-native";
+import { typography } from "@/theme/typography";
 
 interface IProps {
-    title: string;
-    textColor?: "white" | "black"
+  title: string;
+  textColor?: "white" | "black";
+  textStyle?: TextStyle;
 }
-const TextBetweenLine = (props: IProps) => {
-    const { title, textColor = "white" } = props;
-    return (
-        <View style={{
-            flexDirection: "row",
-            gap: 15,
-            justifyContent: "center"
-        }}>
-            <View style={{
-                borderBottomColor: "#ccc",
-                borderBottomWidth: 1,
-                paddingHorizontal: 35
-            }}>
-            </View>
-            <Text style={{
-                color: textColor,
-                position: "relative",
-                top: 10
-            }}>{title}</Text>
-            <View style={{
-                borderBottomColor: "#ccc",
-                borderBottomWidth: 1,
-                paddingHorizontal: 35
-            }}>
 
-            </View>
-        </View>
-    )
-}
+const TextBetweenLine = (props: IProps) => {
+  const { title, textColor = "white", textStyle } = props;
+  return (
+    <View style={styles.container}>
+      <View style={styles.line}></View>
+      <Text style={[styles.text, { color: textColor }, textStyle]}>
+        {title}
+      </Text>
+      <View style={styles.line}></View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    gap: 15,
+    justifyContent: "center",
+  },
+  line: {
+    borderBottomColor: "#ccc",
+    borderBottomWidth: 1,
+    paddingHorizontal: 35,
+  },
+  text: {
+    ...typography.bodyMedium,
+    position: "relative",
+    top: 10,
+  },
+});
 
 export default TextBetweenLine;

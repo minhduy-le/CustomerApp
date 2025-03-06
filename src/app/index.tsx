@@ -15,7 +15,7 @@ const RootPage = () => {
   const [state, setState] = useState<any>();
 
   const [loaded, error] = useFonts({
-    [APP_FONT]: require("@/assets/font/OpenSans-Regular.ttf"),
+    [APP_FONT as any]: require("@/assets/font/Playfair-Italic-VariableFont_opsz,wdth,wght.ttf"),
   });
 
   useEffect(() => {
@@ -39,10 +39,7 @@ const RootPage = () => {
         setState(() => {
           throw new Error("Không thể kết tới API Backend...");
         });
-        // console.log("Không thể kết tới API Backend...")
-        // console.warn(e);
       } finally {
-        // Tell the application to render
         await SplashScreen.hideAsync();
       }
     }
@@ -50,7 +47,7 @@ const RootPage = () => {
     prepare();
   }, []);
   if (true) {
-    return <Redirect href={"/(tabs)"} />;
+    return <Redirect href={"/welcome"} />;
   }
   return <></>;
 };

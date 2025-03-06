@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "RN-basic-hoidanit",
-    "slug": "RN-basic-hoidanit",
+    "name": "TamTac_App",
+    "slug": "TamTac_App",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
@@ -24,10 +24,7 @@
       "favicon": "./src/assets/favicon.png"
     },
     "scheme": "hoidanit-app",
-    "plugins": [
-      "expo-router",
-      "expo-font"
-    ],
+    "plugins": ["expo-router", "expo-font"],
     "experiments": {
       "typedRoutes": true
     }

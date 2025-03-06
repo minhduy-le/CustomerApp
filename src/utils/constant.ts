@@ -1,7 +1,16 @@
-
 export const APP_COLOR = {
-    ORANGE: "#f4511e",
-    GREY: "#d0d0d0"
-}
+  ORANGE: "#FF6B00",
+  YELLOW: "#FFD700",
+  GREY: "#808080",
+  BLACK: "#000000",
+  WHITE: "#FFFFFF",
+};
 
-export const APP_FONT = "OpenSans-Regular";
+export const APP_FONT = {
+  PLAYFAIR: {
+    REGULAR: "Playfair-Regular",
+    MEDIUM: "Playfair-Medium",
+    SEMIBOLD: "Playfair-SemiBold",
+    BOLD: "Playfair-Bold",
+  },
+};
