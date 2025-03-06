@@ -40,7 +40,7 @@ const TabLayout = () => {
             elevation: 5,
           }}
         >
-          <AntDesign name="qrcode" size={size} color={APP_COLOR.ORANGE} />
+          <AntDesign name="qrcode" size={size + 5} color={APP_COLOR.ORANGE} />
         </View>
       ) : (
         <View
@@ -54,7 +54,7 @@ const TabLayout = () => {
             elevation: 5,
           }}
         >
-          <AntDesign name="qrcode" size={size} color={APP_COLOR.GREY} />
+          <AntDesign name="qrcode" size={size + 5} color={APP_COLOR.GREY} />
         </View>
       );
     }

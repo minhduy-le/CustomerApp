@@ -18,7 +18,7 @@ export default function QRScanner() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
   const [scanAnimation] = useState(new Animated.Value(0));
-
+  const [scanResult, setScanResult] = useState("");
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -48,7 +48,7 @@ export default function QRScanner() {
 
   const handleBarCodeScanned = (scanningResult: BarCodeScannerResult) => {
     setScanned(true);
-    alert(`Mã QR đã được quét!\nDữ liệu: ${scanningResult.data}`);
+    setScanResult(scanningResult.data);
   };
 
   if (hasPermission === null) {
@@ -99,22 +99,21 @@ export default function QRScanner() {
         <Animated.View
           style={[
             styles.scanningLine,
-            {
-              transform: [
-                {
-                  translateY: scanAnimation,
-                },
-              ],
-            },
+            { transform: [{ translateY: scanAnimation }] },
           ]}
         />
       </View>
+      <View style={styles.bottomText}>
+        <Text>QR: {scanResult}</Text>
+      </View>
       {scanned && (
-        <Button
-          title="Quét lại"
-          onPress={() => setScanned(false)}
-          color={APP_COLOR.ORANGE}
-        />
+        <View style={styles.reScanButtonContainer}>
+          <Button
+            title="Quét lại"
+            onPress={() => setScanned(false)}
+            color={APP_COLOR.ORANGE}
+          />
+        </View>
       )}
     </View>
   );
@@ -145,10 +144,11 @@ const styles = StyleSheet.create({
     color: APP_COLOR.ORANGE,
   },
   scannerContainer: {
-    width: width,
-    height: width,
+    width: width - 40,
+    height: width - 40,
     position: "relative",
     overflow: "hidden",
+    borderRadius: 50,
   },
   scanner: {
     ...StyleSheet.absoluteFillObject,
@@ -221,5 +221,16 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(219, 122, 12, 0.54)",
     top: 70,
     zIndex: 1,
+  },
+  bottomText: {
+    position: "absolute",
+    bottom: 90,
+  },
+  reScanButtonContainer: {
+    position: "absolute",
+    bottom: 30,
+    width: "90%",
+    paddingHorizontal: 20,
+    zIndex: 100,
   },
 });

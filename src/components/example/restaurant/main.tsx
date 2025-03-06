@@ -19,7 +19,6 @@ import Animated, {
   Extrapolation,
   interpolateColor,
 } from "react-native-reanimated";
-import Info from "./info";
 import { APP_COLOR } from "@/utils/constant";
 import StickyHeader from "./sticky.header";
 import { useRef, useState } from "react";
@@ -179,9 +178,7 @@ const RMain = () => {
       </View>
 
       {/* Info */}
-      <Animated.View style={[animatedInfoStyle]}>
-        <Info infoHeight={INFO_HEIGHT} restaurant={restaurant} />
-      </Animated.View>
+      <Animated.View style={[animatedInfoStyle]}></Animated.View>
 
       {/* Sticky Menu */}
       <Animated.FlatList
