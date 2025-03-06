@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
     fontSize: 60,
     fontFamily: FONTS.bold,
     color: APP_COLOR.YELLOW,
+    marginTop: 150,
   },
   body: {
     fontSize: 35,
@@ -51,25 +52,11 @@ const styles = StyleSheet.create({
     height: 200,
     width: 200,
     marginBottom: 30,
+    marginTop: 50,
   },
   welcomeBtn: {
     flex: 0.4,
     gap: 30,
-  },
-  shareButton: {
-    borderRadius: 30,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-  },
-  btnText: {
-    textTransform: "uppercase",
-    fontFamily: FONTS.medium,
-    fontWeight: "600",
   },
   signUpText: {
     color: "white",
@@ -77,18 +64,20 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
   },
   loginBtn: {
+    width: 150,
     justifyContent: "center",
     borderRadius: 30,
-    marginHorizontal: 50,
     paddingVertical: 10,
     backgroundColor: "#2c2c2c",
     borderColor: "#505050",
     borderWidth: 1,
+    marginHorizontal: 10,
   },
   normalText: {
     ...typography.bodyMedium,
     color: "white",
   },
+  hrefLink: { marginTop: 4 },
   loginBtnText: {
     ...typography.labelLarge,
     color: "#fff",
@@ -120,32 +109,21 @@ const WelcomePage = () => {
             <View
               style={{
                 flexDirection: "row",
-                justifyContent: "center",
-                gap: 30,
+                justifyContent: "space-between",
+                gap: 10,
               }}
             >
               <ShareButton
-                title="faceBook"
+                title="Số điện thoại"
                 onPress={() => {
-                  alert("me");
+                  router.navigate("/(auth)/login");
                 }}
-                textStyle={styles.btnText}
-                btnStyle={styles.shareButton}
-                icons={<Image source={fbLogo} />}
+                textStyle={styles.loginBtnText}
+                btnStyle={styles.loginBtn}
+                pressStyle={{ alignSelf: "stretch" }}
               />
               <ShareButton
-                title="google"
-                onPress={() => {
-                  alert("me");
-                }}
-                textStyle={styles.btnText}
-                btnStyle={styles.shareButton}
-                icons={<Image source={ggLogo} />}
-              />
-            </View>
-            <View>
-              <ShareButton
-                title="Đăng nhập với email"
+                title="Email"
                 onPress={() => {
                   router.navigate("/(auth)/login");
                 }}
@@ -154,6 +132,7 @@ const WelcomePage = () => {
                 pressStyle={{ alignSelf: "stretch" }}
               />
             </View>
+
             <View
               style={{
                 flexDirection: "row",
@@ -162,7 +141,7 @@ const WelcomePage = () => {
               }}
             >
               <Text style={styles.normalText}>Chưa có tài khoản?</Text>
-              <Link href={"/(auth)/signup"}>
+              <Link href={"/(auth)/signup"} style={styles.hrefLink}>
                 <Text style={styles.signUpText}>Đăng ký.</Text>
               </Link>
             </View>
