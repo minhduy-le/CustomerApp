@@ -1,10 +1,9 @@
 {
-  "name": "RN-basic-hoidanit",
+  "name": "TamTac_App",
   "version": "1.0.0",
   "main": "expo-router/entry",
   "author": {
-    "name": "Hỏi Dân IT",
-    "url": "https://hoidanit.vn"
+    "name": "Minz"
   },
   "scripts": {
     "start": "expo start",
