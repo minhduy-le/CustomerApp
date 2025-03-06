@@ -1,19 +1,19 @@
 import { Text, View, StyleSheet, ImageBackground, Image } from "react-native";
+import { Link, router } from "expo-router";
 import ShareButton from "components/button/share.button";
 import { APP_COLOR } from "utils/constant";
 import bg from "@/assets/auth/welcome-background.jpg";
 import { LinearGradient } from "expo-linear-gradient";
-import TextBetweenLine from "@/components/button/text.between.line";
-import { Link, router } from "expo-router";
 import logo from "@/assets/logo.png";
 import { FONTS, typography } from "@/theme/typography";
-
+import TextBetweenLine from "@/components/button/text.between.line";
+import Ionicons from "@expo/vector-icons/Ionicons";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 10,
   },
-  welcomeText: {
+  headingText: {
     flex: 0.6,
     alignItems: "flex-start",
     justifyContent: "center",
@@ -52,38 +52,52 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     marginTop: 50,
   },
-  welcomeBtn: {
+  textLine: {
+    marginBottom: 40,
+  },
+  signUpBtn: {
     flex: 0.4,
-    gap: 30,
+    gap: 10,
   },
   signUpText: {
     color: "white",
     textDecorationLine: "underline",
     fontFamily: FONTS.regular,
   },
-  loginBtn: {
-    width: 160,
+  roleBtn: {
+    width: 300,
     justifyContent: "center",
     borderRadius: 30,
     paddingVertical: 10,
     backgroundColor: "#2c2c2c",
     borderColor: "#505050",
     borderWidth: 1,
-    marginHorizontal: 5,
+    marginHorizontal: 20,
+  },
+  roleBtnText: {
+    ...typography.labelLarge,
+    color: "#fff",
+    paddingVertical: 5,
+  },
+  roleSelection: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 10,
+    marginTop: 30,
   },
   normalText: {
     ...typography.bodyMedium,
     color: "white",
   },
   hrefLink: { marginTop: 4 },
-  loginBtnText: {
-    ...typography.labelLarge,
+  loginLink: {
     color: "#fff",
-    paddingVertical: 5,
+    textDecorationLine: "underline",
+    fontFamily: FONTS.regular,
   },
 });
 
-const WelcomePage = () => {
+const RoleSignup = () => {
   return (
     <ImageBackground style={{ flex: 1 }} source={bg}>
       <LinearGradient
@@ -92,57 +106,42 @@ const WelcomePage = () => {
         locations={[0.2, 0.8]}
       >
         <View style={styles.container}>
-          <View style={styles.welcomeText}>
+          <View style={styles.headingText}>
             <Image style={styles.imgLogo} source={logo} />
             <View style={styles.textBackground}></View>
             <Text style={styles.heading}>Tấm Tắc</Text>
-            <Text style={styles.body}>xin chào.</Text>
+            <Text style={styles.body}>Đăng ký</Text>
           </View>
-
-          <View style={styles.welcomeBtn}>
-            <TextBetweenLine
-              title="Đăng nhập với"
-              textStyle={typography.bodyMedium}
-            />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                gap: 10,
+          <View style={styles.textLine}>
+            <TextBetweenLine title="Đăng ký bằng vai trò" />
+          </View>
+          <View style={styles.signUpBtn}>
+            <ShareButton
+              title="Khách Hàng"
+              onPress={() => {
+                router.navigate("/(auth)/signup");
               }}
-            >
-              <View style={{ flexDirection: "row" }}>
-                <ShareButton
-                  title="Số điện thoại"
-                  onPress={() => {
-                    router.navigate("/(tabs)");
-                  }}
-                  textStyle={styles.loginBtnText}
-                  btnStyle={styles.loginBtn}
-                  pressStyle={{ alignSelf: "stretch" }}
-                />
-              </View>
+              textStyle={styles.roleBtnText}
+              btnStyle={styles.roleBtn}
+              pressStyle={{ alignSelf: "stretch" }}
+            />
+            <View />
+            <View style={styles.signUpBtn}>
               <ShareButton
-                title="Email"
+                title="Nhân Viên"
                 onPress={() => {
-                  router.navigate("/(auth)/login");
+                  router.navigate("/(auth)/signup");
                 }}
-                textStyle={styles.loginBtnText}
-                btnStyle={styles.loginBtn}
+                textStyle={styles.roleBtnText}
+                btnStyle={styles.roleBtn}
                 pressStyle={{ alignSelf: "stretch" }}
               />
             </View>
 
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 10,
-                justifyContent: "center",
-              }}
-            >
-              <Text style={styles.normalText}>Chưa có tài khoản?</Text>
-              <Link href={"/(auth)/role.signup"} style={styles.hrefLink}>
-                <Text style={styles.signUpText}>Đăng ký.</Text>
+            <View style={styles.roleSelection}>
+              <Text style={styles.normalText}>Đã có tài khoản? </Text>
+              <Link href={"/(auth)/login"} style={styles.hrefLink}>
+                <Text style={styles.loginLink}>Đăng nhập.</Text>
               </Link>
             </View>
           </View>
@@ -152,4 +151,4 @@ const WelcomePage = () => {
   );
 };
 
-export default WelcomePage;
+export default RoleSignup;

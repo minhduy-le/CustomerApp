@@ -3,8 +3,9 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Octicons from "@expo/vector-icons/Octicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { APP_COLOR } from "@/utils/constant";
+import { APP_COLOR, APP_FONT } from "@/utils/constant";
 import { View } from "react-native";
+import { FONTS } from "@/theme/typography";
 
 const TabLayout = () => {
   const getIcons = (routeName: string, focused: boolean, size: number) => {
@@ -93,7 +94,11 @@ const TabLayout = () => {
           return getIcons(route.name, focused, size);
         },
         headerShown: false,
-        tabBarLabelStyle: { paddingBottom: 3 },
+        tabBarLabelStyle: {
+          paddingBottom: 3,
+          fontFamily: FONTS.bold,
+          fontSize: 12,
+        },
         tabBarActiveTintColor: APP_COLOR.ORANGE,
         tabBarStyle: {
           borderTopWidth: 0,
@@ -101,7 +106,6 @@ const TabLayout = () => {
           paddingBottom: 5,
           backgroundColor: "#fff",
         },
-
         tabBarLabel:
           route.name === "qr"
             ? "Quét mã QR"
@@ -137,6 +141,8 @@ const TabLayout = () => {
           tabBarLabelStyle: {
             position: "absolute",
             bottom: -17,
+            fontFamily: FONTS.bold,
+            fontSize: 12,
           },
         }}
       />

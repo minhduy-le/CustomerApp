@@ -122,6 +122,11 @@ const RootLayout = () => {
                   presentation: "transparentModal",
                 }}
               />
+              <Stack.Screen
+                name="(auth)/role.signup"
+                options={{ headerShown: false }}
+              />
+
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
               <Stack.Screen
@@ -146,7 +151,6 @@ const RootLayout = () => {
                   presentation: "transparentModal",
                 }}
               />
-
               <Stack.Screen
                 name="(user)/product/place.order"
                 options={{ headerTitle: "Xác nhận đơn hàng" }}

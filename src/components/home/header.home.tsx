@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import * as Location from "expo-location";
-import { APP_COLOR } from "@/utils/constant";
+import { APP_COLOR, APP_FONT } from "@/utils/constant";
 import logo from "@/assets/logo.png";
+import { FONTS } from "@/theme/typography";
 const styles = StyleSheet.create({
   container: {
     paddingTop: 5,
@@ -48,7 +49,14 @@ const HeaderHome = () => {
     <View style={styles.container}>
       <View style={styles.location}>
         <Text
-          style={{ paddingLeft: 5, position: "absolute", top: 10, left: 10 }}
+          style={{
+            paddingLeft: 5,
+            position: "absolute",
+            top: 10,
+            left: 10,
+            fontFamily: FONTS.medium,
+            fontSize: 17,
+          }}
         >
           Giao đến:
         </Text>
@@ -56,9 +64,22 @@ const HeaderHome = () => {
           name="location-pin"
           size={20}
           color={APP_COLOR.ORANGE}
-          style={{ marginLeft: 10, position: "absolute", top: 10, left: 70 }}
+          style={{
+            marginLeft: 10,
+            position: "absolute",
+            top: 10,
+            left: 70,
+          }}
         />
-        <Text style={{ position: "absolute", top: 10, left: 100 }}>
+        <Text
+          style={{
+            position: "absolute",
+            top: 10,
+            left: 100,
+            fontFamily: FONTS.medium,
+            fontSize: 17,
+          }}
+        >
           {location ? location : "Đang lấy vị trí..."}
         </Text>
 

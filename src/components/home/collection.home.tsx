@@ -18,6 +18,7 @@ import { useCurrentApp } from "@/context/app.context";
 import { currencyFormatter } from "@/utils/api";
 import React from "react";
 import Popup from "./popup.home";
+import { FONTS } from "@/theme/typography";
 
 const { height: sHeight, width: sWidth } = Dimensions.get("window");
 
@@ -45,7 +46,6 @@ const CollectionHome = (props: IProps) => {
   const { name, description, refAPI } = props;
   const { cart, setCart, restaurant, setRestaurant } = useCurrentApp();
 
-  // Mock restaurant for testing
   const mockRestaurant = {
     _id: "mock_restaurant_1",
     name: "Test Restaurant",
@@ -186,8 +186,10 @@ const CollectionHome = (props: IProps) => {
             <Text
               style={{
                 color: APP_COLOR.ORANGE,
-                fontSize: 16,
+
                 fontWeight: "600",
+                fontFamily: FONTS.medium,
+                fontSize: 17,
               }}
             >
               {name}
@@ -199,7 +201,15 @@ const CollectionHome = (props: IProps) => {
                 alignItems: "center",
               }}
             >
-              <Text style={{ color: "#5a5a5a" }}>Xem tất cả</Text>
+              <Text
+                style={{
+                  color: "#5a5a5a",
+                  fontFamily: FONTS.medium,
+                  fontSize: 17,
+                }}
+              >
+                Xem tất cả
+              </Text>
               <MaterialIcons
                 style={{ marginTop: 3 }}
                 name="navigate-next"
@@ -210,7 +220,15 @@ const CollectionHome = (props: IProps) => {
           </View>
 
           <View style={{ marginVertical: 5 }}>
-            <Text style={{ color: "#5a5a5a" }}>{description}</Text>
+            <Text
+              style={{
+                color: "#5a5a5a",
+                fontFamily: FONTS.medium,
+                fontSize: 17,
+              }}
+            >
+              {description}
+            </Text>
           </View>
 
           <FlatList
@@ -234,11 +252,22 @@ const CollectionHome = (props: IProps) => {
                       <Text
                         numberOfLines={1}
                         ellipsizeMode="tail"
-                        style={{ fontWeight: "600", maxWidth: 130 }}
+                        style={{
+                          fontWeight: "600",
+                          maxWidth: 130,
+                          fontFamily: FONTS.medium,
+                          fontSize: 17,
+                        }}
                       >
                         {item.name}
                       </Text>
-                      <Text style={{ color: "#5a5a5a", fontSize: 12 }}>
+                      <Text
+                        style={{
+                          color: "#5a5a5a",
+                          fontFamily: FONTS.medium,
+                          fontSize: 17,
+                        }}
+                      >
                         {currencyFormatter(item.price)}
                       </Text>
                     </View>
