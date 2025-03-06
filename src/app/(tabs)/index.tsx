@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Pressable, Text, View, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { APP_COLOR } from "@/utils/constant";
-import { currencyFormatter, getURLBaseBackend } from "@/utils/api";
+import { currencyFormatter } from "@/utils/api";
 import Animated, {
   FadeIn,
   SlideInDown,
