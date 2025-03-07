@@ -1,16 +1,17 @@
 import ShareButton from "@/components/button/share.button";
 import SocialButton from "@/components/button/social.button";
 import ShareInput from "@/components/input/share.input";
-import { registerAPI } from "@/utils/api";
-import { APP_COLOR } from "@/utils/constant";
-import { SignUpSchema, CustomerSignUpSchema } from "@/utils/validate.schema";
+import { APP_COLOR, APP_FONT } from "@/utils/constant";
+import { CustomerSignUpSchema } from "@/utils/validate.schema";
 import axios from "axios";
 import { Link, router } from "expo-router";
 import { Formik } from "formik";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Image } from "react-native";
 import Toast from "react-native-root-toast";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { BASE_URL } from "@/utils/constant";
+import logo from "@/assets/logo.png";
+import { FONTS } from "@/theme/typography";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -20,25 +21,38 @@ const styles = StyleSheet.create({
 });
 
 const handleSignUp = async (phoneNumber: string) => {
-  const BASE_URL: string = "https://tamtac-6548a8185ba9.herokuapp.com";
   try {
-    const response = await axios.post(
+    const signUpResponse = await axios.post(
       `${BASE_URL}/api/v1/users/sign-up/customer`,
       {
         phoneNumber: phoneNumber,
       }
     );
-    console.log("res" + response);
+    if (signUpResponse.data) {
+      const generateCodeResponse = await axios.post(
+        `${BASE_URL}/api/v1/verify-code/generate-code`,
+        {
+          phoneNumber: phoneNumber,
+        }
+      );
 
-    if (response.data) {
-      router.replace({
-        pathname: "/(auth)/verify",
-        params: { phoneNumber: phoneNumber },
-      });
+      if (generateCodeResponse.data) {
+        router.replace({
+          pathname: "/(auth)/verify",
+          params: { phoneNumber: phoneNumber },
+        });
+      } else {
+        Toast.show("Không thể tạo mã xác thực", {
+          duration: Toast.durations.LONG,
+          textColor: "white",
+          backgroundColor: APP_COLOR.ORANGE,
+          opacity: 1,
+        });
+      }
     } else {
-      const message = Array.isArray(response.message)
-        ? response.message[0]
-        : response.message;
+      const message = Array.isArray(signUpResponse.message)
+        ? signUpResponse.message[0]
+        : signUpResponse.message;
 
       Toast.show(message, {
         duration: Toast.durations.LONG,
@@ -47,8 +61,16 @@ const handleSignUp = async (phoneNumber: string) => {
         opacity: 1,
       });
     }
-  } catch (error) {
+  } catch (error: any) {
     console.log(">>> Error during sign-up: ", error);
+    const errorMessage =
+      error.response?.data?.message || "Có lỗi xảy ra khi đăng ký";
+    Toast.show(errorMessage, {
+      duration: Toast.durations.LONG,
+      textColor: "white",
+      backgroundColor: APP_COLOR.ORANGE,
+      opacity: 1,
+    });
   }
 };
 const CustomerSignUpPage = () => {
@@ -58,7 +80,6 @@ const CustomerSignUpPage = () => {
         validationSchema={CustomerSignUpSchema}
         initialValues={{ phoneNumber: "" }}
         onSubmit={(values) => {
-          console.log("Submit Values:", values);
           handleSignUp(values.phoneNumber);
         }}
       >
@@ -71,17 +92,11 @@ const CustomerSignUpPage = () => {
           touched,
         }) => (
           <View style={styles.container}>
-            <View>
-              <Text
-                style={{
-                  fontSize: 25,
-                  fontWeight: 600,
-                  marginVertical: 30,
-                }}
-              >
-                Đăng ký tài khoản khách
-              </Text>
-            </View>
+            <View style={{ marginTop: 30 }}></View>
+            <Image
+              style={{ width: 200, height: 200, marginHorizontal: "auto" }}
+              source={logo}
+            />
             <ShareInput
               title="Số điện thoại"
               onChangeText={handleChange("phoneNumber")}
@@ -91,23 +106,6 @@ const CustomerSignUpPage = () => {
               touched={touched.phoneNumber}
             />
             <View style={{ marginVertical: 10 }}></View>
-            <ShareButton
-              title="Đăng Ký"
-              onPress={handleSubmit}
-              textStyle={{
-                textTransform: "uppercase",
-                color: "#fff",
-                paddingVertical: 5,
-              }}
-              btnStyle={{
-                justifyContent: "center",
-                borderRadius: 30,
-                marginHorizontal: 50,
-                paddingVertical: 10,
-                backgroundColor: APP_COLOR.ORANGE,
-              }}
-              pressStyle={{ alignSelf: "stretch" }}
-            />
 
             <View
               style={{
@@ -120,15 +118,19 @@ const CustomerSignUpPage = () => {
               <Text
                 style={{
                   color: "black",
+                  fontFamily: FONTS.regular,
+                  fontSize: 17,
                 }}
               >
                 Đã có tài khoản?
               </Text>
-              <Link href={"/(auth)/login"}>
+              <Link href={"/(auth)/welcome"}>
                 <Text
                   style={{
                     color: APP_COLOR.ORANGE,
                     textDecorationLine: "underline",
+                    fontFamily: FONTS.regular,
+                    fontSize: 17,
                   }}
                 >
                   Đăng nhập.
@@ -137,6 +139,25 @@ const CustomerSignUpPage = () => {
             </View>
 
             <SocialButton title="Đăng ký với" />
+            <ShareButton
+              title="Đăng Ký với Khách"
+              onPress={handleSubmit}
+              textStyle={{
+                textTransform: "uppercase",
+                color: "#fff",
+                paddingVertical: 5,
+                paddingHorizontal: 42,
+                fontFamily: FONTS.bold,
+              }}
+              btnStyle={{
+                borderRadius: 30,
+                backgroundColor: APP_COLOR.ORANGE,
+                width: 250,
+                marginHorizontal: "auto",
+                marginBottom: 150,
+              }}
+              pressStyle={{ alignSelf: "stretch" }}
+            />
           </View>
         )}
       </Formik>

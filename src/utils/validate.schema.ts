@@ -21,7 +21,9 @@ export const SignUpSchema = Yup.object().shape({
   name: Yup.string().required("Họ tên không được để trống"),
   phoneNumber: Yup.string().required("Số điện thoại không được để trống"),
 });
-
+export const CustomerSignUpSchema = Yup.object().shape({
+  phoneNumber: Yup.string().required("Số điện thoại không được để trống"),
+});
 export const UpdateUserSchema = Yup.object().shape({
   name: Yup.string().required("Họ tên không được để trống"),
   phone: Yup.string().required("Số điện thoại không được để trống"),

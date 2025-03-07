@@ -14,3 +14,4 @@ export const APP_FONT = {
     BOLD: "Playfair-Bold",
   },
 };
+export const BASE_URL = "https://tamtac-6548a8185ba9.herokuapp.com";

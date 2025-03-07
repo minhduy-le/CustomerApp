@@ -8,6 +8,7 @@ import {
   KeyboardTypeOptions,
 } from "react-native";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { FONTS } from "@/theme/typography";
 
 const styles = StyleSheet.create({
   inputGroup: {
@@ -16,7 +17,8 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    fontSize: 18,
+    fontSize: 25,
+    fontFamily: FONTS.regular,
   },
   input: {
     borderWidth: 1,

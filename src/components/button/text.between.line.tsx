@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet, TextStyle } from "react-native";
-import { typography } from "@/theme/typography";
+import { FONTS, typography } from "@/theme/typography";
 
 interface IProps {
   title: string;
@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
     ...typography.bodyMedium,
     position: "relative",
     top: 10,
+    fontFamily: FONTS.regular,
   },
 });
 
