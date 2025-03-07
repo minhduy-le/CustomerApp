@@ -119,7 +119,7 @@ const RoleSignup = () => {
             <ShareButton
               title="Khách Hàng"
               onPress={() => {
-                router.navigate("/(auth)/signup");
+                router.navigate("/(auth)/customer.signup");
               }}
               textStyle={styles.roleBtnText}
               btnStyle={styles.roleBtn}
@@ -140,7 +140,7 @@ const RoleSignup = () => {
 
             <View style={styles.roleSelection}>
               <Text style={styles.normalText}>Đã có tài khoản? </Text>
-              <Link href={"/(auth)/login"} style={styles.hrefLink}>
+              <Link href={"/(auth)/welcome"} style={styles.hrefLink}>
                 <Text style={styles.loginLink}>Đăng nhập.</Text>
               </Link>
             </View>

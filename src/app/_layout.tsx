@@ -14,7 +14,6 @@ import { useCallback } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 
-// Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
 export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
@@ -70,7 +69,6 @@ const RootLayout = () => {
     <GestureHandlerRootView onLayout={onLayoutRootView}>
       <RootSiblingParent>
         <AppProvider>
-          {/* <SafeAreaView style={{ flex: 1 }}> */}
           <ThemeProvider value={navTheme}>
             <Stack
               screenOptions={{
@@ -126,14 +124,11 @@ const RootLayout = () => {
                 name="(auth)/role.signup"
                 options={{ headerShown: false }}
               />
-
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-
               <Stack.Screen
-                name="(user)/product/[id]"
+                name="(auth)/customer.signup"
                 options={{ headerShown: false }}
-                // options={{ headerTitle: "Sản phẩm" }}
-              />
+              ></Stack.Screen>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
               <Stack.Screen
                 name="(user)/product/create.modal"
@@ -167,7 +162,6 @@ const RootLayout = () => {
               />
             </Stack>
           </ThemeProvider>
-          {/* </SafeAreaView> */}
         </AppProvider>
       </RootSiblingParent>
     </GestureHandlerRootView>

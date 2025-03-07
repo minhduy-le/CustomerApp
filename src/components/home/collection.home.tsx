@@ -31,6 +31,7 @@ interface IProps {
 const styles = StyleSheet.create({
   container: {
     padding: 10,
+    backgroundColor: APP_COLOR.WHITE,
   },
   sale: {
     marginTop: 10,
@@ -173,7 +174,7 @@ const CollectionHome = (props: IProps) => {
 
   return (
     <>
-      <View style={{ height: 10, backgroundColor: "#e9e9e9" }}></View>
+      <View style={{ height: 10, backgroundColor: APP_COLOR.YELLOW }}></View>
       {loading === false ? (
         <View style={styles.container}>
           <View
@@ -186,7 +187,6 @@ const CollectionHome = (props: IProps) => {
             <Text
               style={{
                 color: APP_COLOR.ORANGE,
-
                 fontWeight: "600",
                 fontFamily: FONTS.medium,
                 fontSize: 17,
@@ -234,7 +234,7 @@ const CollectionHome = (props: IProps) => {
           <FlatList
             data={restaurants}
             horizontal
-            contentContainerStyle={{ gap: 5 }}
+            contentContainerStyle={{ gap: 7 }}
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => {
@@ -242,7 +242,11 @@ const CollectionHome = (props: IProps) => {
               return (
                 <Pressable onPress={() => handlePressItem(item)}>
                   <View
-                    style={{ backgroundColor: "#efefef", borderRadius: 10 }}
+                    style={{
+                      backgroundColor: "#efefef",
+                      borderRadius: 10,
+                      marginTop: 10,
+                    }}
                   >
                     <Image
                       style={{ height: 130, width: 130, borderRadius: 10 }}
@@ -313,6 +317,7 @@ const CollectionHome = (props: IProps) => {
                       </Pressable>
                     </View>
                   </View>
+                  <View style={{ marginBottom: 20 }}></View>
                 </Pressable>
               );
             }}

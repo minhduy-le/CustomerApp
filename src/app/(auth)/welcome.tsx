@@ -96,7 +96,7 @@ const WelcomePage = () => {
             <Image style={styles.imgLogo} source={logo} />
             <View style={styles.textBackground}></View>
             <Text style={styles.heading}>Tấm Tắc</Text>
-            <Text style={styles.body}>xin chào.</Text>
+            <Text style={styles.body}>Xin chào.</Text>
           </View>
 
           <View style={styles.welcomeBtn}>

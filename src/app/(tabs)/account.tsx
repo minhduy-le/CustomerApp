@@ -9,10 +9,9 @@ import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AccountPage = () => {
-  const { appState } = useCurrentApp();
   const baseImage = `${getURLBaseBackend()}/images/avatar`;
   const insets = useSafeAreaInsets();
-
+  const { appState } = useCurrentApp();
   const handleLogout = () => {
     Alert.alert("Đăng xuất", "Bạn chắc chắn đăng xuất người dùng ?", [
       {
@@ -184,6 +183,7 @@ const AccountPage = () => {
         <Text style={{ textAlign: "center", color: APP_COLOR.GREY }}>
           Version 1.0 - Tấm Tắc
         </Text>
+        <View style={{ marginBottom: 10 }}></View>
       </View>
     </View>
   );
