@@ -128,8 +128,11 @@ const RootLayout = () => {
                 name="(auth)/customer.signup"
                 options={{ headerShown: false }}
               ></Stack.Screen>
+              <Stack.Screen
+                name="(employee)"
+                options={{ headerShown: false }}
+              />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-
               <Stack.Screen
                 name="(user)/product/create.modal"
                 options={{

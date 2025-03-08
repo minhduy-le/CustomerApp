@@ -21,18 +21,14 @@ const RootPage = () => {
   useEffect(() => {
     async function prepare() {
       try {
-        // Pre-load fonts, make any API calls you need to do here
         const res = await getAccountAPI();
-
         if (res.data) {
-          //success
           setAppState({
             user: res.data.user,
             access_token: await AsyncStorage.getItem("access_token"),
           });
           router.replace("/(tabs)");
         } else {
-          //error
           router.replace("/(auth)/welcome");
         }
       } catch (e) {
@@ -47,7 +43,7 @@ const RootPage = () => {
     prepare();
   }, []);
   if (true) {
-    return <Redirect href={"/welcome"} />;
+    return <Redirect href={"/(employee)"} />;
   }
   return <></>;
 };

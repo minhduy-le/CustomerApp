@@ -28,6 +28,7 @@ const handleSignUp = async (phoneNumber: string) => {
         phoneNumber: phoneNumber,
       }
     );
+
     if (signUpResponse.data) {
       const generateCodeResponse = await axios.post(
         `${BASE_URL}/api/v1/verify-code/generate-code`,
@@ -62,9 +63,12 @@ const handleSignUp = async (phoneNumber: string) => {
       });
     }
   } catch (error: any) {
-    console.log(">>> Error during sign-up: ", error);
+    console.log(
+      ">>> Error during sign-up: ",
+      error.response.data.errors[0].message
+    );
     const errorMessage =
-      error.response?.data?.message || "Có lỗi xảy ra khi đăng ký";
+      error.response.data.errors[0].message || "Có lỗi xảy ra khi đăng ký";
     Toast.show(errorMessage, {
       duration: Toast.durations.LONG,
       textColor: "white",
