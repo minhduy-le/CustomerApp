@@ -39,12 +39,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: APP_COLOR.YELLOW,
     padding: 10,
-    borderRadius: 8,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 5,
+    marginTop: 10,
   },
   textContainer: {
     flexDirection: "row",

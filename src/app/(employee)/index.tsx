@@ -5,9 +5,9 @@ import EmployeeHeader from "@/components/employee/topheader.employee";
 
 const HomePage = () => {
   const today = new Date();
-  const currentDate = today.toISOString().split("T")[0]; // Get today's date
+  const currentDate = today.toISOString().split("T")[0];
 
-  const test = ["2025-03-19", "2025-03-21"]; // Task dates array
+  const test = ["2025-03-19", "2025-03-21"];
 
   type taskDate = {
     marked: boolean;

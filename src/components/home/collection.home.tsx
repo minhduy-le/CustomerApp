@@ -49,7 +49,7 @@ const CollectionHome = (props: IProps) => {
 
   const mockRestaurant = {
     _id: "mock_restaurant_1",
-    name: "Test Restaurant",
+    name: "Số món đã đặt",
     menu: [],
   };
 

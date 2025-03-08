@@ -24,18 +24,18 @@ const VerifyPage = () => {
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const otpRef = useRef<OTPTextView>(null);
   const [code, setCode] = useState<string>("");
-
   const { phoneNumber, isLogin } = useLocalSearchParams();
-
   const verifyCode = async () => {
     Keyboard.dismiss();
     setIsSubmit(true);
     const BASE_URL: string = "https://tamtac-6548a8185ba9.herokuapp.com";
 
     try {
+      console.log(code);
       const res = await axios.post(
         `${BASE_URL}/api/v1/verify-code/verify-phone-code`,
         {
+          code: code,
           phoneNumber: phoneNumber,
         }
       );

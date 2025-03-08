@@ -6,8 +6,6 @@ import { useCurrentApp } from "@/context/app.context";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import { APP_FONT } from "@/utils/constant";
-
-// Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
 const RootPage = () => {
@@ -43,7 +41,7 @@ const RootPage = () => {
     prepare();
   }, []);
   if (true) {
-    return <Redirect href={"/(employee)"} />;
+    return <Redirect href={"/(auth)/welcome"} />;
   }
   return <></>;
 };
