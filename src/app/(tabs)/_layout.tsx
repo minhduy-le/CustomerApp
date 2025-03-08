@@ -6,7 +6,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { APP_COLOR, APP_FONT } from "@/utils/constant";
 import { View } from "react-native";
 import { FONTS } from "@/theme/typography";
-
+import Entypo from "@expo/vector-icons/Entypo";
 const TabLayout = () => {
   const getIcons = (routeName: string, focused: boolean, size: number) => {
     if (routeName === "index") {
@@ -60,11 +60,11 @@ const TabLayout = () => {
       );
     }
 
-    if (routeName === "notification") {
+    if (routeName === "chat") {
       return focused ? (
-        <Octicons name="bell-fill" size={size} color={APP_COLOR.ORANGE} />
+        <Entypo name="chat" size={24} color={APP_COLOR.ORANGE} />
       ) : (
-        <Octicons name="bell" size={size} color={APP_COLOR.GREY} />
+        <Entypo name="chat" size={24} color={APP_COLOR.GREY} />
       );
     }
 
@@ -113,8 +113,8 @@ const TabLayout = () => {
             ? "Đơn hàng"
             : route.name === "index"
             ? "Trang chủ"
-            : route.name === "notification"
-            ? "Thông báo"
+            : route.name === "chat"
+            ? "Nhắn tin"
             : "Tôi",
       })}
     >
@@ -147,9 +147,9 @@ const TabLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="notification"
+        name="chat"
         options={{
-          title: "Thông báo",
+          title: "Nhắn tin",
         }}
       />
       <Tabs.Screen

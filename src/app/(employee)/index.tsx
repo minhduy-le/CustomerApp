@@ -40,12 +40,12 @@ const HomePage = () => {
     const selectedDay = day.dateString;
 
     const newMarkedDates = {
+      ...initializeMarkedDates(),
       [selectedDay]: {
         selected: true,
         selectedColor: "orange",
         selectedTextColor: "white",
       },
-      ...initializeMarkedDates(),
     };
 
     setMarkedDates(newMarkedDates);
@@ -58,18 +58,20 @@ const HomePage = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View>
-        <EmployeeHeader
-          employeeName="Minz"
-          employeeCode="123456"
-          branchName="Tam Tac NVH"
+      <View style={{ marginTop: 10 }}>
+        <View>
+          <EmployeeHeader
+            employeeName="Minz"
+            employeeCode="123456"
+            branchName="Tam Tac NVH"
+          />
+        </View>
+        <Calendar
+          current={currentDate}
+          markedDates={combinedMarkedDates}
+          onDayPress={markedSelectDate}
         />
       </View>
-      <Calendar
-        current={currentDate}
-        markedDates={combinedMarkedDates}
-        onDayPress={markedSelectDate}
-      />
     </SafeAreaView>
   );
 };

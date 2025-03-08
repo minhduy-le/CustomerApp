@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: APP_COLOR.YELLOW,
-    padding: 10,
+    padding: 5,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flexDirection: "row",
-    marginTop: 15,
+    marginVertical: 15,
   },
   employeeText: {
     fontSize: 16,

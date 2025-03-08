@@ -1,4 +1,4 @@
-import { Link, Redirect, router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { getAccountAPI } from "@/utils/api";
@@ -41,7 +41,7 @@ const RootPage = () => {
     prepare();
   }, []);
   if (true) {
-    return <Redirect href={"/(auth)/welcome"} />;
+    return <Redirect href={"/(employee)"} />;
   }
   return <></>;
 };
